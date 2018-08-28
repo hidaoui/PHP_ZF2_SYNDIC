@@ -1,0 +1,85 @@
+@CHARSET "ISO-8859-1";
+
+.clickable {
+	cursor: pointer;
+}
+
+.clickable a {
+	color: #fff;
+}
+
+.panel-heading span {
+	/*margin-top: -20px;*/
+	font-size: 14px;
+	/*font-weight: bold;*/
+}
+
+.weight {
+	font-weight: 400;
+}
+/* .nav-tabs-perso {
+    border-bottom: 1px solid #F08200;
+} */
+.nav-tabs-perso>li>a {
+	font-size: 16px;
+}
+/* .nav-tabs-perso > li.active > a, .navtabs-perso > li.active > a:focus, .navtabs-perso > li.active > a:hover {
+	color: #8a6d3b;
+} */
+.nav-tabs-perso>li.active>a, .nav-tabs-perso>li.active>a:focus,
+	.nav-tabs>li.active>a:hover {
+	/*border-width: 2px;*/
+	color: #3a4657;
+	font-weight: bold;
+}
+
+.tabbable-custom>.nav-tabs-perso>li.active {
+	border-top: 3px solid #f08200;
+	font-weight: bold;
+}
+
+.tabbable-custom>.nav-tabs-perso>li.active a {
+	font-weight: bold;
+}
+
+.span-title-garbage {
+	/*padding-left: 20%;*/
+	font-weight: bold;
+}
+.span-title-garbage-deee {
+	font-weight: bold;
+}
+
+.md-checkbox-perso label>.box {
+	/*border: 2px solid #31708f;*/
+	border: 2px solid #fff;
+	/*height: 18px;
+    width: 18px;*/
+}
+.md-checkbox-perso label > .box {
+	top:-2px !important;
+}
+.md-checkbox-perso label>.check {
+	border-color: -moz-use-text-color #298A4B #298A4B -moz-use-text-color;
+}
+
+.md-checkbox-perso label {
+	padding-left: 26px;
+	/*color: #31708f;*/
+	color:#fff;
+	font-weight: bold;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+.panel-body-grey {
+	background-color: #EEEEEE;
+}
+.clickable-gototop a{
+	color: #f08200;
+}
+.clickable-gototop a:hover {
+	color: #31708f;
+}

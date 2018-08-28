@@ -1,0 +1,169 @@
+<div class="row">
+	<div class="col-md-12" id="BLOCK_MSG_FORM_COTISATION"></div>
+</div>
+<form id="FORM_COTISATION">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true"></button>
+			<h4 class="modal-title">
+				<i class="fa fa-edit"></i> Ajout cotisation pour appartement n°: <span
+					class="label label-sm label-danger"><?=($m!==null)?($m->getNumappt()==0)?'CAFÉ':$m->getNumappt():'';?></span>
+			</h4>
+		</div>
+		<div class="modal-body form">
+			<div class="form-body">
+
+				<div class="alert alert-info">
+					<strong>Cotisation : </strong> <?=($m==null)?0:$m->getFirstname().' '.$m->getLastname();?> - <strong><?=($m!==null)?($m->getNumappt()==0)?'CAFÉ':'N° '.$m->getNumappt():'';?></strong>
+				</div>
+
+				<input type="hidden" name="COTISATION_MEMBER_ID"
+					value="<?=($m==null)?0:$m->getId();?>">
+				<input type="hidden" name="COTISATION_MEMBER_APPT"
+					value="<?=($m==null)?0:$m->getNumappt();?>">	
+				
+				<div class="form-group">
+					<input style="display: none;" id="INPUT_COTISATION_VERIFICATION" type="text" name="COTISATION_VERIFICATION"
+						class="form-control input-sm" value="">
+				</div>
+				
+				<div class="form-group">
+					<label>Date : </label>
+						<input id="date_picker_cotisation" class="form-control input-sm date-picker" size="16" name="COTISATION_DATE"
+							type="text" value="" />
+				</div>
+
+				<div class="form-group">
+					<label>Année : </label> <input id="INPUT_COTISATION_ANNEE" type="text" readonly="readonly" name="COTISATION_ANNEE"
+						class="form-control input-sm" value="">
+				</div>
+				<div class="form-group">
+					<label>Mois : </label> <input id="INPUT_COTISATION_MOIS" type="text" readonly="readonly" name="COTISATION_MOIS"
+						class="form-control input-sm" value="">
+				</div>
+				
+				<div class="form-group">
+					<label>Montant (dh) : </label> <input type="text"
+						name="COTISATION_MONTANT" class="form-control input-sm" value="">
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" id="BTN_CLOSE_MODAL_COTISATION"
+				class="btn default btn-sm" data-dismiss="modal">
+				<i class="fa fa-times"></i> Fermer
+			</button>
+			<button type="submit" id="BTN_SUBMIT_FORM_COTISATION"
+				class="btn blue btn-sm">
+				<i class="fa fa-save"></i> Valider
+			</button>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" src="ressources_myhd/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript">
+$('.date-picker').datepicker({
+    orientation: "left",
+    format: 'dd-mm-yyyy',
+    autoclose: true,
+    changeMonth:true,
+}).on('changeDate',function(e){
+	//Année
+	var currYear=String(e.date).split(" ")[3];
+	$('#INPUT_COTISATION_ANNEE').val(currYear);
+	//Mois
+	var currMonth=new Date(e.date).getMonth()+1;
+	$('#INPUT_COTISATION_MOIS').val(currMonth);
+
+	$('#INPUT_COTISATION_VERIFICATION').val('01-'+currMonth+'-'+currYear);
+});
+
+//VALIDATION FORM
+var form_cotisation = $('#FORM_COTISATION');
+var error3 = $('.alert-danger', form_cotisation);
+var success3 = $('.alert-success', form_cotisation);
+	
+form_cotisation.validate({
+    errorElement: 'span', //default input error message container
+    errorClass: 'help-block help-block-error', // default input error message class
+    focusInvalid: false, // do not focus the last invalid input
+    ignore: "",  // validate all fields including form hidden input
+    messages: {
+    	COTISATION_VERIFICATION:{remote:'Vous avez déjà une cotisation pour ce mois'}
+    },
+    rules: {
+    	COTISATION_DATE:{
+    		required: true,
+        },
+        COTISATION_MONTANT:{
+            required:true,
+        	number: true,
+        },
+        COTISATION_VERIFICATION:{
+    		required: true,
+    		remote: {
+                url: "/check_if_exist_cotisation/<?=($m==null)?0:$m->getNumappt();?>",
+                type: "post"
+             }
+        },
+    },
+
+    invalidHandler: function (event, validator) { //display error alert on form submit              
+        success3.hide();
+        error3.show();
+        Metronic.scrollTo(error3, -200);
+    },
+
+    highlight: function (element) { // hightlight error inputs
+        $(element)
+            .closest('.form-group').addClass('has-error'); // set error class to the control group
+    },
+
+    unhighlight: function (element) { // revert the change done by hightlight
+        $(element)
+            .closest('.form-group').removeClass('has-error'); // set error class to the control group
+    },
+
+    success: function (label) {
+        label
+            .closest('.form-group').removeClass('has-error'); // set success class to the control group
+    },
+
+    submitHandler: function (form) {
+        error3.hide();
+        //return false;
+       $(form).attr('action', "/cotisation_processing");
+			$('#BTN_SUBMIT_FORM_COTISATION,#BTN_CLOSE_MODAL_COTISATION').attr("disabled", false);
+			$('#BLOCK_MSG_FORM_COTISATION').html(loader_modal_html);
+			var formData = $(form).serializeArray();
+			$.ajax({			
+		        url: $(form).attr("action"),          
+		        type : "POST",
+		        dataType:'json',
+		        data:  formData,
+		        success : function(data) {
+		        	if(data.success==true){
+		        		$('#BTN_SUBMIT_FORM_COTISATION,#BTN_CLOSE_MODAL_COTISATION').attr("disabled", false);
+		        		reload_datatable_members();
+		        		$('#BLOCK_MSG_FORM_COTISATION').html('<div class="alert alert-success">'+data.message+'</div>');
+	        			toastr.success(data.message, 'Succès');
+	        			$('#BTN_CLOSE_MODAL_COTISATION').click();
+		        	}else{
+		        		toastr.error(data.message, 'Erreur');
+		        		$('#BTN_SUBMIT_FORM_COTISATION,#BTN_CLOSE_MODAL_COTISATION').attr("disabled", false);
+		        		$('#BLOCK_MSG_FORM_COTISATION').html('<div class="alert alert-danger">'+data.message+'</div>');
+		        	}
+		         },
+		        error:function(err){
+		        	toastr.error('Erreur...', 'Erreur');
+		        	$('#BTN_SUBMIT_FORM_COTISATION,#BTN_CLOSE_MODAL_COTISATION').attr("disabled", false);
+		        	$('#BLOCK_MSG_FORM_COTISATION').html('<div class="alert alert-danger">Erreur ...</div>');
+			    }
+				});     			
+			return false;
+        
+    }
+});
+
+</script>

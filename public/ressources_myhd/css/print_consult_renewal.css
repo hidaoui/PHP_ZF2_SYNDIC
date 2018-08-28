@@ -1,0 +1,10 @@
+@CHARSET "ISO-8859-1";
+
+@media print {
+	#breadcrumb_consultation {
+		display: none;
+	}
+	#group_btn_consultation {
+		display: none;
+	}
+}

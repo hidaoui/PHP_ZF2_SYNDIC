@@ -1,0 +1,331 @@
+<?php
+$title = 'CHARGES | SYNDIC ALMANAR C 126';
+$this->headTitle ( $title );
+?>
+<?php
+
+echo $this->headLink ()->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css' ) )->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-toastr/toastr.min.css' ) )->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/select2/select2.css' ) )->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css' ) );
+?>
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-ehcg">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<i style="color: #fdc300;" class="fa fa-chevron-right"></i> Charges
+				</h3>
+			</div>
+			<div class="panel-body">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
+
+								<div class="row">
+
+									<div class="col-md-12">
+										<form id="form_filtre_cotisations" class="form-inline"
+											style="margin-bottom: 0px;">
+
+											<div class="form-group">
+												<label>Type de charge : </label> <select
+													class="form-control input-sm" name="SELECT_TYPE_CHARGE"
+													id="SELECT_TYPE_CHARGE">
+													<option value="TOUT">Tout</option>
+												</select>
+											</div>
+											
+										</form>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="table-toolbar" style="margin-bottom: 0px;">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="btn-group">
+												<button type="button" onclick="ADD_CHARGE(0)"
+													class="btn btn-default btn-sm"><i class="fa fa-plus"></i>
+													Nouvelle charge </button>
+												<button type="button" onclick="DELETE(0)"
+													class="btn btn-default btn-sm">
+													<i class="fa fa-trash"></i> Supprimer
+												</button>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="btn-group pull-right">
+												<button type="button" onclick="EXPORT(0);"
+													class="btn btn-default btn-sm">
+													<i class="fa fa-cloud-download"></i> Exporter
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<table class="table table-striped table-bordered table-hover"
+							id="table_charges">
+							<thead>
+								<tr>
+									<th class="table-checkbox"><input type="checkbox"
+										class="group-checkable"
+										data-set="#table_charges .checkboxes" /></th>
+									<th>N°</th>
+									<th>Date</th>
+									<th>Libellé</th>
+									<th>Montant charges (DH)</th>
+									<th>Type</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal loading -->
+<div class="modal fade bs-modal-sm" id="modal_loading" tabindex="-1"
+	data-backdrop="static" role="basic" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div id="modal_loading_body"
+			class="modal-content loading-message loading-message-boxed"></div>
+	</div>
+</div>
+<!--  End loading -->
+
+<!--  MODAL COTISATION -->
+<div class="modal fade bs-modal-lg" id="modal_charges" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog" id="modal_content_charges"></div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<?php
+echo $this->headScript ()->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-toastr/toastr.min.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootbox/bootbox.min.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/select2/select2.min.js' ) )->prependFile ( $this->basePath ( 'js/localization_js_validation/messages_fr.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/jquery-validation/js/jquery.validate.min.js' ) );
+?>
+
+<script type="text/javascript">
+	$('li').removeClass('open');
+	$('#menu_admin_charges').addClass('active-wtp');
+
+	var loader_html = "<div class='loading-message loading-message-boxed'><center><i style='font-size:20px;color:#444868' class='fa fa-spinner fa-spin'></i> Traitement en cours ...veuillez patientez</center></div>";
+	var loader_modal_html = "<center style='color:#444868;'><i style='font-size:20px;' class='fa fa-spinner fa-spin'></i> Traitement en cours ...</center>";
+	
+	var table = $('#table_charges');
+
+    // begin first table
+    table.dataTable({
+
+        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+        "language": {
+        	"processing":"Traitement en cours...",
+            "aria": {
+                "sortAscending": ": activer pour trier la colonne par ordre croissant",
+                "sortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
+            },
+            "emptyTable": "Aucune donn&eacute;e disponible dans le tableau",
+            "info": "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+            "infoEmpty": "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+            "infoFiltered": "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+            "infoPostFix":    "",
+            "loadingRecords": "<i class='fa fa-spinner fa-spin'></i> Chargement en cours...",
+            "lengthMenu": "Afficher _MENU_ &eacute;l&eacute;ments",
+            "search": "Filtrer&nbsp;:",
+            "zeroRecords": "Aucun &eacute;l&eacute;ment &agrave; afficher",
+            "paginate": {
+                "previous":"Pr&eacute;c&eacute;dent",
+                "next": "Suivant",
+                "last": "Dernier",
+                "first": "Premier"
+            }
+		},
+		"ajax": {
+			    "url": "/source_datatable_charges", // ajax source
+		},	
+		 "processing": true,
+		 "ordering":false,
+        "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
+        "lengthMenu": [
+            [5, 15, 20, -1],
+            [5, 15, 20, "All"] // change per page values here
+        ],
+        // set the initial value
+        "pageLength": 5,            
+        "pagingType": "bootstrap_full_number",
+        "columnDefs": [{  // set default column settings
+            'orderable': false,
+            'targets': [0]
+        }, {
+            "searchable": false,
+            "targets": [0]
+        }],
+        "drawCallback": function( settings ) {
+        	$('[data-toggle="tooltip"]').tooltip();       	
+    	},
+    	"fnInitComplete" : function(settings, json){ 
+        	$('[data-toggle="tooltip"]').tooltip();        
+    	}
+    });
+
+    var tableWrapper = jQuery('#table_charges_wrapper');
+
+    table.find('.group-checkable').change(function () {
+        var set = jQuery(this).attr("data-set");
+        var checked = jQuery(this).is(":checked");
+        jQuery(set).each(function () {
+            if (checked) {
+                $(this).attr("checked", true);
+                $(this).parents('tr').addClass("active");
+            } else {
+                $(this).attr("checked", false);
+                $(this).parents('tr').removeClass("active");
+            }
+        });
+        jQuery.uniform.update(set);
+    });
+
+    table.on('change', 'tbody tr .checkboxes', function () {
+        $(this).parents('tr').toggleClass("active");
+    });
+
+    tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+
+
+    function reload_datatable_charges(){
+  	  table.api().ajax.url( "/source_datatable_charges").load();
+  	}
+
+
+    getTypesCharge();
+	 function getTypesCharge(){
+			var SELECT_TYPE_CHARGE = $('#SELECT_TYPE_CHARGE');
+			$.ajax({
+		        url: '/get_select_type_charge',
+		        dataType: 'json',
+		        success: function(json) {
+		            $.each(json, function(index, value) {
+		            	var selected='';
+		            	SELECT_TYPE_CHARGE.append('<option value='+ index +' '+selected+' >'+ value +'</option>');
+		            });
+		        }
+		    });
+		}
+
+	 $('#SELECT_TYPE_CHARGE').on('change', function() {
+		  var val=this.value;
+
+		  if(val=="TOUT"){
+			  reload_datatable_charges();
+			  return 0;
+		  }
+
+		  $.ajax({			        
+		        type : "POST",
+		        dataType: 'json',
+		        data:  {TYPE:val},
+		        url: "/source_datatable_charges",
+		        success : function(response) {
+			        	if (response.aaData.length==0) {
+			        		$('#table_charges').dataTable().fnClearTable();
+			        		
+			        		return 0;
+			        	}  	    
+		        		$('#table_charges').dataTable().fnClearTable();
+						$("#table_charges").dataTable().fnAddData(response.aaData, true);
+						
+		   	        	},
+		   	     error : function(){
+		   	        		$('#table_charges').dataTable().fnClearTable();
+		   	        	}
+		            
+				});
+		  
+	 });
+
+	 function ADD_CHARGE(id){
+	    	$('#modal_content_charges').html(loader_modal_html);
+	    	$('#modal_charges').modal('show');
+	    	$.ajax({
+	    		url : "/get_form_charge/"+id,
+	    		success : function(data){
+	    			$('#modal_content_charges').html(data);
+	    		}
+	    	});
+	    }		
+
+	 function DELETE(id){
+			var loader_modal_html = "<center style='color:#444868;'><i style='font-size:20px;' class='fa fa-spinner fa-spin'></i> Traitement en cours ...</center>";
+			var TableauIdProcess = new Array();
+			var j = 0;
+			if(id>0){
+				TableauIdProcess[0]=id;
+			}else{	
+				table.$('input[class="checkboxes"]').each(function(){
+				var checked = jQuery(this).is(":checked");
+				if(checked){
+					TableauIdProcess[j] = jQuery(this).val();
+					j++;
+				}
+				});
+			}
+				
+				if(TableauIdProcess.length<1){
+					bootbox.dialog({
+				                title: "<i class='fa fa-warning'></i> Avertissement",
+				                message: 'Attention aucune ligne n\'est sélectionnée',
+				                buttons: {
+				                    CANCEL: {
+				                        label: "<i class='fa fa-times'></i> Ok"
+				                    }
+				                }
+				            });
+				}else{
+					bootbox.confirm("Voulez vous vraiment supprimer la sélection ?", function(result) {
+						if(result==true){
+								$('#modal_loading_body').html(loader_modal_html);
+								$('#modal_loading').modal('show');
+								$.ajax({
+						        url : "/delete_charge",
+						        type: 'POST',
+						        dataType: 'json',
+						        data: {selection:TableauIdProcess},
+						        success : function(response){
+						        	 $('#modal_loading').modal('hide'); 
+						        	 if(response.success==true){
+						        		 reload_datatable_charges();
+						        		toastr.success('Suppression avec succès', 'Succès');
+						        	 }else if(response.success==false){
+						        		 reload_datatable_charges();
+						        		toastr.error('Erreur de suppression', 'Erreur');
+						        	 }
+						           }
+					    		});
+						}
+					});
+				}
+		}
+	 
+</script>

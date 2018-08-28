@@ -1,0 +1,122 @@
+<?php
+$title = 'TABLEAU DE BORD | SYNDIC ALMANAR C 126';
+$this->headTitle ( $title );
+?>
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-ehcg">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<i style="color: #fdc300;" class="fa fa-chevron-right"></i> TABLEAU
+					DE BORD
+				</h3>
+			</div>
+			<div class="panel-body">
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+								<div class="dashboard-stat blue">
+									<div class="visual">
+										<i class="fa fa-shopping-cart"></i>
+									</div>
+									<div class="details">
+										<div class="number" id="ID_TOTAL_COTISATIONS">
+											<i class="fa fa-spinner fa-spin"></i>
+										</div>
+										<div class="desc">Total cotisations</div>
+									</div>
+									<a class="more" href="javascript:;"> &nbsp; <i
+										class="m-icon-swapright m-icon-white"></i>
+									</a>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+								<div class="dashboard-stat red">
+									<div class="visual">
+										<i class="fa fa-globe"></i>
+									</div>
+									<div class="details">
+										<div class="number" id="ID_TOTAL_CHARGES">
+											<i class="fa fa-spinner fa-spin"></i>
+										</div>
+										<div class="desc">Total des charges</div>
+									</div>
+									<a class="more" href="javascript:;"> &nbsp; <i
+										class="m-icon-swapright m-icon-white"></i>
+									</a>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+								<div class="dashboard-stat green">
+									<div class="visual">
+										<i class="fa fa-bar-chart-o"></i>
+									</div>
+									<div class="details">
+										<div class="number" id="ID_RESTE">
+											<i class="fa fa-spinner fa-spin"></i>
+										</div>
+										<div class="desc">Reste</div>
+									</div>
+									<a class="more" href="javascript:;"> &nbsp; <i
+										class="m-icon-swapright m-icon-white"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div id="chart_6" class="chart" style="height: 525px;"></div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php
+echo $this->headScript ()->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/amcharts/amcharts/lang/fr.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/amcharts/amcharts/dataloader.min.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/amcharts/amcharts/pie.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/amcharts/amcharts/amcharts.js' ) );
+?>
+
+<script type="text/javascript">
+var chart = AmCharts.makeChart("chart_6", {
+    "type": "pie",
+    "theme": "light",
+    "fontFamily": 'Open Sans', 
+    "color":    '#888',
+
+    "dataLoader": {
+	    "url": "/source_stats_charges_amchart",
+	    "format": "json"
+ 	},
+    
+    "valueField": "total",
+    "titleField": "charge",
+    "exportConfig": {
+        menuItems: [{
+            icon: "ressources_myhd/assets/global/plugins/amcharts/amcharts/images/export.png",
+            format: 'png'
+        }]
+    }
+});
+GET_STATS();
+function GET_STATS(){
+	$.ajax({
+		url : "/get_stats_dashboard",
+		dataType: 'json',
+		success : function(data){
+			$('#ID_TOTAL_COTISATIONS').html(data.total_cotisations);
+			$('#ID_TOTAL_CHARGES').html(data.total_charges);
+			$('#ID_RESTE').html(data.reste);
+		}
+	});
+}
+
+</script>

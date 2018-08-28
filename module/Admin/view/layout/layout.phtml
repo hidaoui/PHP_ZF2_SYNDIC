@@ -1,0 +1,157 @@
+<?php echo $this->doctype(); ?>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+<meta charset="utf-8" />
+		<?php echo $this->headTitle ( 'Admin APP SYNDIC ALMANAR C 126' )->setSeparator ( ' - ' )->setAutoEscape ( false );?>
+        <?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+		<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<!--
+<link href='http://fonts.googleapis.com/css?family=Trebuchet+MS:400,400italic,700,700italic|Trebuchet+MS:400,400italic,700,700italic|Trebuchet+MS:400,400italic,700,700italic|Trebuchet+MS:400,400italic,700,700italic|Trebuchet+MS:400,400italic,700,700italic|Trebuchet+MS:400,400italic,700,700italic|Trebuchet+MS:400,400italic,700,700italic|Trebuchet+MS:400,400italic,700,700italic&subset=latin,latin-ext,cyrillic,cyrillic-ext,greek-ext,greek,vietnamese' rel='stylesheet' type='text/css'>
+-->  		
+<link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+		<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/ressources_myhd/favicon.ico'))
+						->prependStylesheet($this->basePath('ressources_myhd/assets/admin/layout5/css/custom.css'))
+						->prependStylesheet($this->basePath('ressources_myhd/assets/admin/layout5/css/layout.css'))
+						->prependStylesheet($this->basePath('ressources_myhd/assets/global/css/plugins.css'))
+						->prependStylesheet($this->basePath('ressources_myhd/assets/global/css/components-rounded.css'))
+						->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css'))
+						->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/uniform/css/uniform.default.css'))
+                        ->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/bootstrap/css/bootstrap.min.css'))
+                        ->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/simple-line-icons/simple-line-icons.min.css'))
+                        ->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/font-awesome/css/font-awesome.min.css')) ?>                       
+<!-- BEGIN CORE PLUGINS -->
+<?php echo $this->headScript() 
+				->prependFile($this->basePath('ressources_myhd/assets/admin/layout5/scripts/layout.js'))
+				->prependFile($this->basePath('ressources_myhd/assets/global/scripts/metronic.js'))
+				->prependFile($this->basePath('ressources_myhd/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js'))
+				->prependFile($this->basePath('ressources_myhd/assets/global/plugins/uniform/jquery.uniform.min.js'))
+	        	->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery.blockui.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'))	         
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js'))	            
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/bootstrap/js/bootstrap.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery-migrate.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery.min.js'))
+	        ; ?> 
+<!-- END CORE PLUGINS -->	        
+	        
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="page-header-fixed page-quick-sidebar-over-content">
+	<!-- BEGIN MAIN LAYOUT -->
+	<div class="wrapper">
+		<!-- Header BEGIN -->
+	    <header class="page-header">
+	        <nav class="navbar mega-menu" role="navigation">
+	            <div class="container-fluid">
+	                <div class="clearfix navbar-fixed-top">
+		                <!-- Brand and toggle get grouped for better mobile display -->
+		                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+		                    <span class="sr-only">Toggle navigation</span>
+		                    <span class="toggle-icon">
+		                        <span class="icon-bar"></span>
+		                        <span class="icon-bar"></span>
+		                        <span class="icon-bar"></span>
+		                    </span>
+		                </button>
+		                <!-- End Toggle Button -->
+
+	                	<!-- BEGIN LOGO -->
+	                    <a id="index" class="page-logo" href="#">
+	                        <img src="<?php echo $this->basePath('img/logo_syndic_almanar_c126.png') ?>" alt="Logo MYHD">
+	                    </a>
+	                	<!-- END LOGO -->
+
+		                <!-- BEGIN TOPBAR ACTIONS -->
+		                <div class="topbar-actions">
+		                	<!-- BEGIN GROUP NOTIFICATION -->
+							
+		                	<!-- END GROUP NOTIFICATION -->
+
+							<!-- BEGIN GROUP INFORMATION -->
+							<!-- END GROUP INFORMATION -->
+
+							<!-- BEGIN USER PROFILE -->
+			                <div class="btn-group-img btn-group">
+								<button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+									
+									<span>
+									<?php if( $this->loggedUser ): ?>
+										<?php echo $this->loggedUser->getFirstnameuser();?> <i class="fa fa-angle-down"></i>
+									<?php endif;?>
+									</span>
+								</button>
+								<ul class="dropdown-menu-v2" role="menu">
+									<li>
+										<div style="padding: 8px 20px;color: #fdc300;"><?php echo $this->loggedUser->getFirstnameuser().' '.$this->loggedUser->getLastnameuser();?></div>
+									</li>
+									<li class="divider"></li>
+									<li class="active">
+										<a href="#"><i class="icon-user"></i> Mon profil</a>
+									</li>
+									<li class="divider"></li>
+									<li>
+										<a href="/logout"><i class="icon-key"></i> Déconnexion</a>
+									</li>
+								</ul>
+							</div>
+							<!-- END USER PROFILE -->
+
+							<!-- BEGIN QUICK SIDEBAR TOGGLER 						
+			                <button type="button" class="quick-sidebar-toggler">
+			                    <span class="sr-only">Toggle Quick Sidebar</span>
+			                    <i class="icon-logout"></i>
+			                </button>
+							-->							
+			                <!-- END QUICK SIDEBAR TOGGLER -->
+						</div>
+		                <!-- END TOPBAR ACTIONS -->
+	                </div>
+
+	                <!-- Collect the nav links, forms, and other content for toggling -->
+	                <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">
+	                    	<?php echo $this->partial('navigation_bo_mywebtoprint'); ?>
+	                </div>
+	                <!-- END NAVBAR COLLAPSE -->
+	            </div>
+	            <!--/container-->
+	        </nav>
+	    </header>
+		<!-- Header END -->
+
+		<!-- Page Content BEGIN -->
+	    <div class="container-fluid">
+	    		<div class="page-content">  		
+	    			<?php echo $this->content; ?>
+	    		</div>
+	    	</div>
+			<!-- Page Content END -->
+
+			<!-- BEGIN QUICK SIDEBAR -->
+			<!-- END QUICK SIDEBAR -->			
+			
+			<!-- Copyright BEGIN -->
+			<p class="copyright"><?php echo date('Y') ?> © APP SYNDIC ALMANAR C 126.
+	 		</p>
+			<!-- Copyright END -->
+	    </div>
+	</div>
+    <!-- END MAIN LAYOUT -->
+    <a href="#index" class="go2top"><i class="icon-arrow-up"></i></a>
+<!-- END PAGE LEVEL SCRIPTS -->
+<script>
+jQuery(document).ready(function() {    
+   	Metronic.init(); // init metronic core componets
+   	Layout.init(); // init layout
+});
+</script>
+<!-- END JAVASCRIPTS -->    
+<?php echo $this->inlineScript()?>    
+</body>
+<!-- END BODY -->
+</html>

@@ -1,0 +1,413 @@
+<?php
+$title = 'Cotisations | SYNDIC ALMANAR C 126';
+$this->headTitle ( $title );
+?>
+<?php
+
+echo $this->headLink ()->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css' ) )->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-toastr/toastr.min.css' ) )->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/select2/select2.css' ) )->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css' ) );
+?>
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-ehcg">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<i style="color: #fdc300;" class="fa fa-chevron-right"></i>
+					Cotisations
+				</h3>
+			</div>
+			<div class="panel-body">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
+
+								<div class="row">
+
+									<div class="col-md-12">
+										<form id="form_filtre_cotisations" class="form-inline"
+											style="margin-bottom: 0px;">
+
+											<div class="form-group">
+												<label>Appartement : </label> <select
+													class="form-control input-sm" name="SELECT_NUM_APPT"
+													id="SELECT_NUM_APPT">
+												</select>
+											</div>
+											
+											<button type="submit" class="btn btn-default btn-sm">
+												<i class="fa fa-refresh"></i> Filtrer <span
+													id="id_block_icone_filtre"></span>
+											</button>
+										</form>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="row" style="display: none;">
+					<div class="col-md-12">
+						<form id="FORM_IMPORT_COTISATIONS">
+							<div class="form-group">
+								<div class="col-md-9">
+									<div class="fileinput fileinput-new" data-provides="fileinput">
+										<div class="input-group input-sm">
+											<div
+												class="form-control uneditable-input input-fixed input-sm"
+												data-trigger="fileinput">
+												<i class="fa fa-file fileinput-exists"></i>&nbsp; <span
+													class="fileinput-filename"> </span>
+											</div>
+											<span class="input-group-addon btn default btn-file btn-sm">
+												<span class="fileinput-new"> Sélectionner un fichier excel</span>
+												<span class="fileinput-exists"> Changer </span> <input
+												accept=".xlsx,.xls" type="file" name="FILE_XLS_COTISATIONS">
+											</span> <a href="javascript:;"
+												id="BTN_SUPPR_FILE_XLS"
+												class="input-group-addon btn red fileinput-exists btn-sm"
+												data-dismiss="fileinput"> Supprimer </a>
+										</div>
+									</div>
+								</div>
+								<label class="control-label col-md-3"><button type="submit"
+										class="btn btn-default btn-sm">
+										<i class="fa fa-upload"></i> Importer
+									</button></label>
+							</div>
+						</form>
+					</div>
+				</div>
+
+
+				<div class="row">
+					<div class="col-md-12">
+
+						<div class="panel panel-default" style="display: none;">
+							<div class="panel-body">
+								<div class="table-toolbar" style="margin-bottom: 0px;">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="btn-group">
+												<a href="/fournisseur/0" id=""
+													class="btn btn-default btn-sm"><i class="fa fa-plus"></i>
+													Nouveau fournisseur </a>
+												<button type="button" onclick="DLF(0)"
+													class="btn btn-default btn-sm">
+													<i class="fa fa-trash"></i> Supprimer
+												</button>
+												<button type="button" onclick="ACTIVATION(0)"
+													class="btn btn-default btn-sm">
+													<i class="fa fa-check"></i> Activer / Désactiver
+												</button>
+												<button type="button"
+													onclick="reload_datatable_cotisations();"
+													class="btn btn-default btn-sm">
+													<i class="fa fa-refresh"></i> Actualiser
+												</button>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="btn-group pull-right">
+												<button type="button" onclick="EXPORT(0);"
+													class="btn btn-default btn-sm">
+													<i class="fa fa-cloud-download"></i> Exporter
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<table class="table table-striped table-bordered table-hover"
+							id="table_cotisations">
+							<thead>
+								<!--<tr>
+									<th class="table-checkbox"><input type="checkbox"
+										class="group-checkable"
+										data-set="#table_cotisations .checkboxes" /></th>
+									<th>N° Appt</th>
+									<th>Date cotisation</th>
+									<th>Mois</th>
+									<th>Année</th>
+									<th>Montant cotisation (DH)</th>
+								</tr>-->
+								
+								<tr class="warning">
+									<th class="table-checkbox"><input type="checkbox"
+										class="group-checkable"
+										data-set="#table_cotisations .checkboxes" /></th>
+									<th>N° Appt</th>
+									<?php foreach ($tab_header as $h):?>
+									<th <?=($myNow==$h)?'style="background-color:#006dcc;color:#fff;"':'';?>><?=$h;?></th>
+									<?php endforeach;?>
+									
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal loading -->
+<div class="modal fade bs-modal-sm" id="modal_loading" tabindex="-1"
+	data-backdrop="static" role="basic" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div id="modal_loading_body"
+			class="modal-content loading-message loading-message-boxed"></div>
+	</div>
+</div>
+<!--  End loading -->
+
+<!--  MODAL COTISATION -->
+<div class="modal fade bs-modal-lg" id="modal_cotisation" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog" id="modal_content_cotisation"></div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<?php
+echo $this->headScript ()->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootstrap-toastr/toastr.min.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/bootbox/bootbox.min.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/select2/select2.min.js' ) )->prependFile ( $this->basePath ( 'js/localization_js_validation/messages_fr.js' ) )->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/plugins/jquery-validation/js/jquery.validate.min.js' ) );
+?>
+
+<script type="text/javascript">
+	$('li').removeClass('open');
+	$('#menu_admin_membres').addClass('active-wtp');
+
+	var loader_html = "<div class='loading-message loading-message-boxed'><center><i style='font-size:20px;color:#444868' class='fa fa-spinner fa-spin'></i> Traitement en cours ...veuillez patientez</center></div>";
+	var loader_modal_html = "<center style='color:#444868;'><i style='font-size:20px;' class='fa fa-spinner fa-spin'></i> Traitement en cours ...</center>";
+	
+	var table = $('#table_cotisations');
+
+    // begin first table
+    table.dataTable({
+
+        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+        "language": {
+        	"processing":"Traitement en cours...",
+            "aria": {
+                "sortAscending": ": activer pour trier la colonne par ordre croissant",
+                "sortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
+            },
+            "emptyTable": "Aucune donn&eacute;e disponible dans le tableau",
+            "info": "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+            "infoEmpty": "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+            "infoFiltered": "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+            "infoPostFix":    "",
+            "loadingRecords": "<i class='fa fa-spinner fa-spin'></i> Chargement en cours...",
+            "lengthMenu": "Afficher _MENU_ &eacute;l&eacute;ments",
+            "search": "Filtrer&nbsp;:",
+            "zeroRecords": "Aucun &eacute;l&eacute;ment &agrave; afficher",
+            "paginate": {
+                "previous":"Pr&eacute;c&eacute;dent",
+                "next": "Suivant",
+                "last": "Dernier",
+                "first": "Premier"
+            }
+		},
+		"ajax": {
+			    "url": "/source_datatable_cotisations", // ajax source
+		},	
+		 "processing": true,
+		 "ordering":false,
+        "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
+        "lengthMenu": [
+            [5, 15, 20, -1],
+            [5, 15, 20, "All"] // change per page values here
+        ],
+        // set the initial value
+        "pageLength": 20,            
+        "pagingType": "bootstrap_full_number",
+        "columnDefs": [{  // set default column settings
+            'orderable': false,
+            'targets': [0]
+        }, {
+            "searchable": false,
+            "targets": [0]
+        }],
+        "drawCallback": function( settings ) {
+        	$('[data-toggle="tooltip"]').tooltip();       	
+    	},
+    	"fnInitComplete" : function(settings, json){ 
+        	$('[data-toggle="tooltip"]').tooltip();        
+    	}
+    });
+
+    var tableWrapper = jQuery('#table_cotisations_wrapper');
+
+    table.find('.group-checkable').change(function () {
+        var set = jQuery(this).attr("data-set");
+        var checked = jQuery(this).is(":checked");
+        jQuery(set).each(function () {
+            if (checked) {
+                $(this).attr("checked", true);
+                $(this).parents('tr').addClass("active");
+            } else {
+                $(this).attr("checked", false);
+                $(this).parents('tr').removeClass("active");
+            }
+        });
+        jQuery.uniform.update(set);
+    });
+
+    table.on('change', 'tbody tr .checkboxes', function () {
+        $(this).parents('tr').toggleClass("active");
+    });
+
+    tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+
+
+    function reload_datatable_cotisations(){
+  	  table.api().ajax.url( "/source_datatable_cotisations").load();
+  	}
+
+
+
+    $("#form_filtre_cotisations").submit(function(event){
+        $("#id_block_icone_filtre").html('<i class="fa fa-spinner fa-spin"></i>');			
+		$('#form_filtre_cotisations').attr('action', "/source_datatable_cotisations");	  								
+			var formData = $(this).serializeArray();
+			$.ajax({			        
+	        type : "POST",
+	        dataType: 'json',
+	        data:  formData,
+	        url: $(this).attr("action"),
+	        success : function(response) {
+	        		$("#id_block_icone_filtre").html('');
+	        	//console.log(response.aaData.length);
+		        	if (response.aaData.length==0) {
+		        		$('#table_cotisations').dataTable().fnClearTable();
+		        		
+		        		return 0;
+		        	}  	    
+	        		$('#table_cotisations').dataTable().fnClearTable();
+					$("#table_cotisations").dataTable().fnAddData(response.aaData, true);
+					
+	   	        	},
+	   	     error : function(){
+	   	    		$("#id_block_icone_filtre").html('');
+	   	        		$('#table_cotisations').dataTable().fnClearTable();
+	   	        	}
+	            
+			});
+			return false;
+		});
+    
+
+    getNumAppartements();
+	 function getNumAppartements(){
+			var SELECT_NUM_APPT = $('#SELECT_NUM_APPT');
+			$.ajax({
+		        url: '/get_num_appts',
+		        dataType: 'json',
+		        success: function(json) {
+		            $.each(json, function(index, value) {
+		            	var selected='';
+		            	SELECT_NUM_APPT.append('<option value='+ index +' '+selected+' >'+ value +'</option>');
+		            });
+		        }
+		    });
+		}
+
+	//IMPORTER UN FICHIER XLS
+	   var loader_modal_html = "<center style='color:#444868;'><i style='font-size:20px;' class='fa fa-spinner fa-spin'></i> Traitement en cours ...</center>";
+      var formxls = $('#FORM_IMPORT_COTISATIONS');
+	   var error2 = $('.alert-danger', formxls);
+	   var success2 = $('.alert-success', formxls);
+		
+	   formxls.validate({
+	       errorElement: 'span', //default input error message container
+	       errorClass: 'help-block help-block-error', // default input error message class
+	       focusInvalid: false, // do not focus the last invalid input
+	       ignore: "",  // validate all fields including form hidden input
+	       messages: {
+	    	   FILE_XLS_COTISATIONS: { required: "Merci de sélectionner un fichier" }
+	       },
+	       rules: {
+	    	   FILE_XLS_COTISATIONS: {
+	               required: true,
+	           }
+	       },
+
+	       invalidHandler: function (event, validator) { //display error alert on form submit              
+	           success2.hide();
+	           error2.show();
+	           Metronic.scrollTo(error2, -200);
+	       },
+
+	       highlight: function (element) { // hightlight error inputs
+	           $(element)
+	               .closest('.form-group').addClass('has-error'); // set error class to the control group
+	       },
+
+	       unhighlight: function (element) { // revert the change done by hightlight
+	           $(element)
+	               .closest('.form-group').removeClass('has-error'); // set error class to the control group
+	       },
+
+	       success: function (label) {
+	           label
+	               .closest('.form-group').removeClass('has-error'); // set success class to the control group
+	       },
+
+	       submitHandler: function (form) {
+	           //success1.show();
+	           error2.hide();
+	           
+	            $(form).attr('action', "/import_cotisations");
+				$('#modal_loading_body').html(loader_modal_html);
+				$('#modal_loading').modal('show');
+			
+				var $form    = $(form),
+		        formData = new FormData(),
+		        params   = $form.serializeArray(),
+		        files    = $form.find('[name="FILE_XLS_COTISATIONS"]')[0].files;
+				
+			    $.each(files, function(i, file) {
+			        formData.append('UPLOADED_FILES', file);
+			    });
+			
+			    $.each(params, function(i, val) {
+			        formData.append(val.name, val.value);
+			    });
+
+				$.ajax({			
+			        url: $(form).attr("action"),          
+			        type : "POST",
+			        data:  formData,
+			        mimeType: "multipart/form-data",
+			        async: false,
+			        cache: false,
+			        contentType: false,
+			        processData: false,
+			        dataType: 'json',
+			        success : function(json) {
+			        	//var json=jQuery.parseJSON(data);
+			        	if(json.success==true){
+		   	        		$('#modal_loading').modal('hide');   	   	    
+		   	        		reload_datatable_cotisations();
+		   	        		$('#BTN_SUPPR_FILE_XLS').click();
+			        		toastr.success('Import terminé avec succès', 'Succès');
+		   	   	        	}
+			         }
+					});			     			
+	 			return false;
+	           
+	       }
+	   });	
+</script>

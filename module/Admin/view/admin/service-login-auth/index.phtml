@@ -1,0 +1,201 @@
+<?php echo $this->doctype(); ?>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<?php echo $this->headTitle('Connexion | APP SYNDIC ALMANAR C 126')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+<?php echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+?>
+<!-- BEGIN GLOBAL MANDATORY STYLES -->
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/ressources_myhd/favicon.ico'))
+						->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/admin/layout/css/custom.css' ) )
+						->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/admin/layout/css/themes/darkblue.css' ) )
+						->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/admin/layout/css/layout.css' ) )
+						->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/css/plugins.css' ) )
+						->prependStylesheet ( $this->basePath ( 'ressources_myhd/assets/global/css/components.css' ) )
+						->prependStylesheet ( $this->basePath ( 'ressources_myhd/css/login.css' ) )
+						->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/uniform/css/uniform.default.css'))
+                        ->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/bootstrap/css/bootstrap.min.css'))
+                        ->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/simple-line-icons/simple-line-icons.min.css'))
+                        ->prependStylesheet($this->basePath('ressources_myhd/assets/global/plugins/font-awesome/css/font-awesome.min.css')) ?>
+<!-- END GLOBAL MANDATORY STYLES -->
+<style>
+body {
+    background-color: #FFFFFF !important;
+}
+</style>
+<?php echo $this->headScript()
+				->prependFile ( $this->basePath ( 'ressources_myhd/scripts/login/validation_login.js' ) )
+				->prependFile ( $this->basePath ( 'ressources_myhd/scripts/login/login.js' ) )
+				->prependFile ( $this->basePath ( 'ressources_myhd/assets/global/scripts/metronic.js' ) )
+	        	->prependFile($this->basePath('ressources_myhd/assets/global/plugins/uniform/jquery.uniform.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery.cokie.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery.blockui.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/bootstrap/js/bootstrap.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery-migrate.min.js'))
+	            ->prependFile($this->basePath('ressources_myhd/assets/global/plugins/jquery.min.js'))
+	        ; ?>       
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="login">
+<style>
+.btn-success {
+	background-color: #1d1600;
+	border-color: #1d1600;
+}
+
+.btn-success:hover {
+	background-color: #fdc300;
+	border-color: #fdc300;
+}
+a {
+    color: #1d1600;
+}
+a:hover {
+    color: #fdc300;
+}
+</style>
+<!-- END PAGE LEVEL SCRIPTS -->
+<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+<div class="menu-toggler sidebar-toggler"></div>
+<!-- END SIDEBAR TOGGLER BUTTON -->
+<!-- BEGIN LOGO -->
+<div class="logo">
+	<a href="#"> <img width="290" src="<?php echo $this->basePath('img/logo_syndic_almanar_c126.png') ?>" alt="Logo SYNDIC ALMANAR C 126">
+	</a>
+</div>
+<!-- END LOGO -->
+<div class="content">
+	<!-- BEGIN LOGIN FORM -->
+	<div class="login-form">
+		<h3 class="form-title">Connexion </h3>
+		<div id="block_alert_login"></div>
+		<!--  
+		<div id="block_alert_login" class="alert alert-danger display-hide">
+			<button class="close" data-close="alert"></button>
+			<span id="block_login"> Enter any username and password. </span>
+		</div>
+		-->
+		<div class="form-group">
+			<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+			<label class="control-label visible-ie8 visible-ie9">Identifiant</label>
+			<input class="form-control form-control-solid placeholder-no-fix"
+				id="input_login" type="text" autocomplete="off"
+				placeholder="Identifiant" name="username" />
+		</div>
+		<div class="form-group">
+			<label class="control-label visible-ie8 visible-ie9">Mot de passe</label>
+			<input class="form-control form-control-solid placeholder-no-fix"
+				id="input_password" type="password" autocomplete="off"
+				placeholder="Mot de passe" name="password" />
+		</div>
+		<div class="form-actions">
+			<button type="button" class="btn btn-success uppercase" onclick="login()"
+				id="btn_login">Se connecter</button>
+			<label class="rememberme check"> <input type="checkbox"
+				name="remember" value="1" />Se souvenir de moi
+			</label>
+			 <a href="javascript:;" id="forget-password"
+				class="forget-password">Mot de passe oublié</a>
+		</div>
+	</div>
+	<!-- END LOGIN FORM -->
+	<!-- BEGIN FORGOT PASSWORD FORM -->
+	<div class="forget-form" id="block_forget_form">
+		<h3 style="font-size: 22px;">Réinitialisation du mot de passe</h3>
+		<p id="title_reset_password">Veuillez saisir votre adresse mail. Vous recevez un mail avec un
+			lien vous permettant de réinitialiser votre mot de passe.</p>
+		<div id="block_alert_forgot"></div>
+		<div class="form-group" id="form-group-email">
+			<input class="form-control placeholder-no-fix" id="user_email"
+				type="text" autocomplete="off" placeholder="Email" name="email" /> <span
+				id="help-block-empty-mail" style="display: none;" class="help-block">Aucune
+				adresse e-mail indiquée ci-dessus, veuillez réessayer </span> <span
+				id="help-block-invalid-mail" style="display: none;"
+				class="help-block">Veuillez saisir une adresse électronique valide </span>
+		</div>
+		<div class="form-actions">
+			<button type="button" id="back-btn" class="btn btn-default"><i class="fa fa-angle-double-left"></i> Retour</button>
+			<button type="button" id="btn_validate_forgot_password"
+				class="btn btn-success uppercase pull-right">Valider</button>
+		</div>
+	</div>
+	<!-- END FORGOT PASSWORD FORM -->
+</div>
+
+
+<div class="copyright">
+	 <?php echo date('Y') ?> © ALMANAR C 126. Version : 1.0
+</div>
+<script type="text/javascript">
+jQuery(document).ready(function() {  
+Metronic.init(); // init metronic core components
+Login.init();
+
+$('#input_password').keypress(function(event) {
+			if (event.which == '13') {
+				login();
+     		}
+});
+//Mot de passe oubliée btn_validate_forgot_password
+$('#btn_validate_forgot_password').click(function() {
+	var email=$('#user_email').val();
+	if(!email){
+		$('#block_alert_forgot').html('');
+		$('#form-group-email').addClass( "has-error" );
+		$('#help-block-empty-mail').show();
+		setTimeout(function(){
+			$('#form-group-email').removeClass( "has-error" );
+			$('#help-block-empty-mail').hide();
+    	}, 4000);
+	}else if(!validateEmail(email)){
+		$('#block_alert_forgot').html('');
+		$('#form-group-email').addClass( "has-error" );
+		$('#help-block-invalid-mail').show();
+		setTimeout(function(){
+			$('#form-group-email').removeClass( "has-error" );
+			$('#help-block-invalid-mail').hide();
+    	}, 4000);
+	}else{
+		$('#block_alert_forgot').html( '<p><i class="fa fa-spinner fa-spin" style="color: #529644;font-size: 20px;"></i> Traitement en cours, veuillez patienter...</p>');
+		$.ajax({
+	        url : "/forgot_password",
+	        type: 'POST',
+	        data:{email:email},
+	        success : function(data){
+	        	if(data.success==true){
+	        			$( "#title_reset_password").hide();
+	        			$( "#back-btn").hide();
+	        			$( "#btn_validate_forgot_password").hide();
+	        			$( "#form-group-email").hide();		        		
+		        		var styleMessage='<div class="alert alert-success fade in"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
+			    		'<i class="fa fa-check-circle fa-fw fa-lg"></i> Nous venons de vous envoyer un email afin de réinitialiser votre mot de passe.  Si vous ne recevez pas notre email,  vérifier que celui-ci ne se trouve pas dans votre dossier "Courrier Indésirable".</div>';
+		        		$('#block_alert_forgot').html(styleMessage);
+		        	}else if(data.success==false){
+		        		var styleMessage='<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
+			    		'<i class="fa fa-times-circle fa-fw fa-lg"></i> L\'adresse e-mail n\'existe pas.</div>';
+		        		$('#block_alert_forgot').html(styleMessage);
+		        	}
+	        },
+	        error: function(data){
+	        	var styleMessage='<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
+			    		'<i class="fa fa-times-circle fa-fw fa-lg"></i> Echec d\'envoi de mail</div>';
+		        $('#block_alert_forgot').html(styleMessage);
+	        }
+    	});
+	}
+});
+
+});
+function validateEmail(email) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
+</script>
+<!-- END LOGIN -->
+</body>
+</html>
