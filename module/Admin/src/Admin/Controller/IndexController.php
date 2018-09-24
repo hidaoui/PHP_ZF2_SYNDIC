@@ -361,9 +361,9 @@ class IndexController extends AbstractActionController {
 		$totalCharge = $admin_tools->getTotalCharges ();
 		$reste = $totalCotisation - $totalCharge;
 		$data = array (
-				'total_cotisations' => $totalCotisation . ' dhs',
-				'total_charges' => $totalCharge . ' dhs',
-				'reste' => $reste . ' dhs' 
+				'total_cotisations' => number_format($totalCotisation,2). ' dhs',
+				'total_charges' => number_format($totalCharge,2). ' dhs',
+				'reste' => number_format($reste,2). ' dhs' 
 		);
 		return new JsonModel ( $data );
 		exit ();
